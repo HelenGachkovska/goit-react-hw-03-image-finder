@@ -24,6 +24,13 @@ class ImageInfo extends Component {
     showModal: false,
   };
 
+   static getDerivedStateFromProps(nextProps, prevState) {
+    if (prevState.value !== nextProps.value) {
+      return { page: 1, value: nextProps.value };
+    }
+    return null;
+  }
+
   componentDidUpdate(prevProps, prevState) {
     const prevValue = prevProps.searchValue;
     const nextValue = this.props.searchValue;
