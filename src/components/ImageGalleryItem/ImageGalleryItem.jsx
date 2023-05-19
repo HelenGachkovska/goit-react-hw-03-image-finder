@@ -1,11 +1,15 @@
 import PropTypes from 'prop-types';
 import { ImageGalleryEl, ImageGalleryElImage } from './styled';
 
-const ImageGalleryItem = ({ el }) => {
-  const { tags, webformatURL } = el;
+const ImageGalleryItem = ({ el, onImageClick }) => {
+  const { largeImageURL, tags, webformatURL } = el;
   return (
-    <ImageGalleryEl className="gallery-item">
-      <ImageGalleryElImage src={webformatURL} alt={tags} />
+    <ImageGalleryEl>
+      <ImageGalleryElImage
+        src={webformatURL}
+        alt={tags}
+        onClick={() => onImageClick({ largeImageURL, tags })}
+      />
     </ImageGalleryEl>
   );
 };
@@ -13,8 +17,10 @@ const ImageGalleryItem = ({ el }) => {
 ImageGalleryItem.propTypes = {
   el: PropTypes.shape({
     tags: PropTypes.string.isRequired,
-    webformatURL: PropTypes.string.isRequired
-  })
-}
+    webformatURL: PropTypes.string.isRequired,
+    largeImageURL: PropTypes.string.isRequired,
+  }),
+  onImageClick: PropTypes.func.isRequired,
+};
 
 export default ImageGalleryItem;

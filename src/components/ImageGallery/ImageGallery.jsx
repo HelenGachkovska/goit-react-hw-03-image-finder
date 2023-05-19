@@ -1,13 +1,14 @@
 import PropTypes from 'prop-types';
 import ImageGalleryItem from 'components/ImageGalleryItem/index';
-import { Gallery} from './styled';
+import { Gallery } from './styled';
 
-const ImageGallery = ({ images }) => {
-  console.log(images);
+const ImageGallery = ({ images, onImageClick }) => {
   return (
-    <Gallery className="gallery">
+    <Gallery>
       {images.map(image => {
-        return <ImageGalleryItem key={image.id} el={image} />;
+        return (
+          <ImageGalleryItem key={image.id} el={image} onImageClick={onImageClick} />
+        );
       })}
     </Gallery>
   );
@@ -15,6 +16,7 @@ const ImageGallery = ({ images }) => {
 
 ImageGallery.propTypes = {
   images: PropTypes.arrayOf(PropTypes.shape).isRequired,
+  onImageClick: PropTypes.func.isRequired
 };
 
 export default ImageGallery;

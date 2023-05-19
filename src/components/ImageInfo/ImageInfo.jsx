@@ -4,6 +4,8 @@ import ErrorMassage from 'components/ErrorMassage/index';
 import { fetchImage } from 'servise/imgApi';
 import ImageGallery from 'components/ImageGallery/index';
 import Loader from 'components/Loader/index';
+import Button from 'components/Button/index';
+import Modal from 'components/Modal/index';
 
 const Status = {
   IDLE: 'idle',
@@ -17,25 +19,53 @@ class ImageInfo extends Component {
     error: null,
     status: Status.IDLE,
     images: [],
+    page: 1,
+    totalPages: 0,
+    showModal: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
     const prevValue = prevProps.searchValue;
     const nextValue = this.props.searchValue;
 
-    if (prevValue !== nextValue) {
+
+    if (prevValue !== nextValue || prevState.page !== this.state.page) {
       this.setState({ status: Status.PENDING });
 
-      fetchImage(nextValue)
-        .then(images =>
-          this.setState({ images: images.hits, status: Status.RESOLVED })
-        )
+      if (this.state.error) {
+        this.setState({ error: null });
+      }
+
+      fetchImage(nextValue, this.state.page)
+        .then(images => {
+          this.setState({
+            images:
+              this.state.page === 1
+                ? images.hits
+                : [...prevState.images, ...images.hits],
+            status: Status.RESOLVED,
+            totalPages: Math.floor(images.totalHits / 12),
+          });
+        })
         .catch(error => this.setState({ error, status: Status.REJECTED }));
     }
   }
 
+  handleLoadMore = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }));
+  };
+
+  setModalData = modalData => {
+    this.setState({ modalData, showModal: true });
+  };
+
+  handleModalClose = () => {
+    this.setState({ showModal: false });
+  };
+
   render() {
-    const { images, error, status } = this.state;
+    const { images, error, status, page, totalPages, showModal, modalData } =
+      this.state;
 
     if (status === 'idle') {
       return;
@@ -53,9 +83,26 @@ class ImageInfo extends Component {
     }
 
     if (status === 'resolved') {
-      return <ImageGallery images={this.state.images} />;
+      return (
+        <>
+          <ImageGallery
+            images={this.state.images}
+            onImageClick={this.setModalData}
+          />
+          {images.length > 0 && status !== 'pending' && page <= totalPages && (
+            <Button onClick={this.handleLoadMore} />
+          )}
+          {showModal && (
+            <Modal modalData={modalData} onModalClose={this.handleModalClose} />
+          )}
+        </>
+      );
     }
   }
 }
+
+ImageInfo.propTypes = {
+  searchValue: PropTypes.string.isRequired,
+};
 
 export default ImageInfo;

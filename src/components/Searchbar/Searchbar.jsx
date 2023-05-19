@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { SearchHeader, SearchForm, SearchFormButton, SearchFormInput, SearchFormButtonLabel } from './styled';
+import { ImSearch } from 'react-icons/im';
+import {
+  SearchHeader,
+  SearchForm,
+  SearchFormButton,
+  SearchFormInput,
+} from './styled';
 // import Notiflix from 'notiflix';
 
 class Searchbar extends Component {
@@ -17,23 +23,25 @@ class Searchbar extends Component {
   hanlerSubmitForm = e => {
     e.preventDefault();
     if (this.state.searchValue.trim() === '') {
-      toast.info('Please, enter a word to search for.');
+      toast.error('Please, enter a word to search for.', {
+        position: 'top-right',
+        theme: 'light',
+      });
       return;
     }
     this.props.onSubmit(this.state.searchValue);
-    //   this.setState({ searchValue: '' });
+    // this.setState({ searchValue: '' });
   };
 
   render() {
     return (
-      <SearchHeader className="searchbar">
-        <SearchForm className="form" onSubmit={this.hanlerSubmitForm}>
-          <SearchFormButton type="submit" className="button">
-            <SearchFormButtonLabel className="button-label">Search</SearchFormButtonLabel>
+      <SearchHeader>
+        <SearchForm onSubmit={this.hanlerSubmitForm}>
+          <SearchFormButton type="submit">
+            <ImSearch size={25} />
           </SearchFormButton>
 
           <SearchFormInput
-            className="input"
             type="text"
             autoComplete="off"
             autoFocus

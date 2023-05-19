@@ -1,9 +1,10 @@
 import PropTypes from 'prop-types';
+import { Text } from './styled';
 
 const ErrorMassage = ({ massage }) => {
   return (
     <div>
-      <p>{massage}</p>
+      <Text>{massage}</Text>
     </div>
   );
 };

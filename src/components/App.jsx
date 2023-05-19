@@ -1,7 +1,6 @@
 import { Component } from 'react';
 import { ToastContainer } from 'react-toastify';
 import Searchbar from './Searchbar/index';
-import ImageGallery from './ImageGallery/index';
 import ImageInfo from './ImageInfo/index';
 
 export class App extends Component {
