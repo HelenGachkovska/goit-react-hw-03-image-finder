@@ -24,7 +24,7 @@ class ImageInfo extends Component {
     showModal: false,
   };
 
-   static getDerivedStateFromProps(nextProps, prevState) {
+  static getDerivedStateFromProps(nextProps, prevState) {
     if (prevState.value !== nextProps.value) {
       return { page: 1, value: nextProps.value };
     }
@@ -34,7 +34,6 @@ class ImageInfo extends Component {
   componentDidUpdate(prevProps, prevState) {
     const prevValue = prevProps.searchValue;
     const nextValue = this.props.searchValue;
-
 
     if (prevValue !== nextValue || prevState.page !== this.state.page) {
       this.setState({ status: Status.PENDING });
@@ -55,6 +54,16 @@ class ImageInfo extends Component {
           });
         })
         .catch(error => this.setState({ error, status: Status.REJECTED }));
+    }
+
+    if (this.state.page !== 1) {
+      const scrollOnLoadButton = () => {
+        window.scrollTo({
+          top: document.documentElement.scrollHeight,
+          behavior: 'smooth',
+        });
+      };
+      scrollOnLoadButton();
     }
   }
 
