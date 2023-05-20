@@ -34,9 +34,15 @@ class ImageInfo extends Component {
   componentDidUpdate(prevProps, prevState) {
     const prevValue = prevProps.searchValue;
     const nextValue = this.props.searchValue;
+    
+     if (prevValue !== nextValue) {
+        this.setState({ page: 1 });
+      }
 
     if (prevValue !== nextValue || prevState.page !== this.state.page) {
       this.setState({ status: Status.PENDING });
+
+     
 
       if (this.state.error) {
         this.setState({ error: null });
@@ -56,15 +62,15 @@ class ImageInfo extends Component {
         .catch(error => this.setState({ error, status: Status.REJECTED }));
     }
 
-    if (this.state.page !== 1) {
-      const scrollOnLoadButton = () => {
-        window.scrollTo({
-          top: document.documentElement.scrollHeight,
-          behavior: 'smooth',
-        });
-      };
-      scrollOnLoadButton();
-    }
+    // if (this.state.page !== 1) {
+    //   const scrollOnLoadButton = () => {
+    //     window.scrollTo({
+    //       top: document.documentElement.scrollHeight,
+    //       behavior: 'smooth',
+    //     });
+    //   };
+    //   scrollOnLoadButton();
+    // }
   }
 
   handleLoadMore = () => {
@@ -88,7 +94,18 @@ class ImageInfo extends Component {
     }
 
     if (status === 'pending') {
-      return <Loader />;
+      return (
+        <>
+          {page !== 1 && (
+            <ImageGallery
+              images={this.state.images}
+              onImageClick={this.setModalData}
+            />
+          )}
+          <Loader />
+          {totalPages > 12 && <Button onClick={this.handleLoadMore} />}
+        </>
+      );
     }
     if (status === 'rejected') {
       return <ErrorMassage massage={error.massage} />;
